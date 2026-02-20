@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inkforge — Global Styles */
+
+:root {
+  --ink-black: #1a1a2e;
+  --ink-blue: #0066cc;
+  --ink-dark-blue: #003366;
+  --ink-sepia: #704214;
+  --paper-white: #fefefe;
+  --paper-cream: #f5f0e8;
+  --paper-aged: #e8dcc8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

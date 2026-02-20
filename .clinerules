@@ -1,0 +1,33 @@
+# Inkforge — Cline AI Rules
+
+## Project
+Inkforge: LSTM+MDN stroke-level handwriting synthesis engine. NOT a font renderer.
+
+## Stack
+- Backend: FastAPI 0.110+ / PyTorch 2.x / Celery + Redis / CairoSVG + Pillow
+- Frontend: React 18 / Vite 5 / Zustand / Tailwind CSS 3
+- Language: Python 3.10+ (backend) / JavaScript JSX (frontend)
+
+## Critical Context
+- Strokes are (Δx, Δy, p1, p2, p3) tuples — relative deltas, NOT absolute coordinates
+- p1/p2/p3 are mutually exclusive pen states (down/up/end-of-sequence)
+- Model: 3× LSTM (hidden=512, dropout=0.2) + MDN (M=20 bivariate Gaussians)
+- Style conditioning: latent vector z ∈ ℝ¹²⁸ concatenated at each timestep
+
+## Code Style
+- Python: type hints on ALL functions, Google docstrings, PEP 8, 100-char max
+- React: functional components + hooks, no class components, Zustand for state
+- Tailwind CSS for all styling
+
+## File Organization
+- `backend/app/ml/` → PyTorch model code
+- `backend/app/models/` → Pydantic request/response schemas
+- `backend/app/api/routes/` → FastAPI route handlers (always async)
+- `backend/app/services/` → Business logic (inference, rendering)
+- `frontend/src/components/` → React components (PascalCase.jsx)
+
+## Rules
+1. Never use synchronous inference in API routes — always queue via Celery
+2. Never commit .env, checkpoints (.pt), or data files
+3. Use config YAML for all hyperparameters — no hardcoded values
+4. Conventional Commits for all commit messages

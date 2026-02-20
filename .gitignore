@@ -1,0 +1,125 @@
+# ============================================================
+# INKFORGE .gitignore
+# Python + Node.js + ML Artifacts + IDE + OS
+# ============================================================
+
+# ---------------------- Python ----------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+.eggs/
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# Testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ---------------------- Node.js ----------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnp
+.pnp.js
+
+# Build output
+frontend/dist/
+frontend/build/
+
+# ---------------------- ML Artifacts ----------------------
+# Model checkpoints (large binary files)
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+!.gitkeep
+
+# Training data (large datasets)
+data/iam/
+data/raw/
+data/processed/
+*.hdf5
+*.h5
+*.npz
+*.npy
+
+# Training logs
+runs/
+logs/
+wandb/
+mlruns/
+lightning_logs/
+tensorboard/
+
+# ---------------------- Environment ----------------------
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Keep example env files
+!.env.example
+
+# ---------------------- IDE / Editor ----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ---------------------- OS ----------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------- Docker ----------------------
+docker-compose.override.yml
+
+# ---------------------- Misc ----------------------
+*.log
+*.tmp
+*.bak
+*.orig
+exports/
+output/

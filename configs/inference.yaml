@@ -1,0 +1,41 @@
+# ============================================================
+# INKFORGE — Inference Configuration
+# ============================================================
+
+# --- Model ---
+model:
+  checkpoint_path: "checkpoints/lstm_mdn_v1.pt"
+  device: "cpu"                   # cpu | cuda
+
+# --- Generation Defaults ---
+generation:
+  max_seq_len: 2000               # Max stroke sequence length
+  temperature: 0.4                # Default sampling temperature τ
+  batch_size: 1                   # Single-sample inference
+
+# --- Style Presets ---
+# Precomputed style embeddings from clustered IAM writers
+style_presets:
+  neat_cursive:
+    embedding_file: "checkpoints/styles/neat_cursive.npy"
+    description: "Clean, flowing cursive handwriting"
+  casual_print:
+    embedding_file: "checkpoints/styles/casual_print.npy"
+    description: "Relaxed print handwriting"
+  rushed_notes:
+    embedding_file: "checkpoints/styles/rushed_notes.npy"
+    description: "Quick, compressed handwriting"
+  doctors_scrawl:
+    embedding_file: "checkpoints/styles/doctors_scrawl.npy"
+    description: "Highly compressed, barely legible"
+  elegant_formal:
+    embedding_file: "checkpoints/styles/elegant_formal.npy"
+    description: "Deliberate, well-spaced, calligraphic"
+
+# --- Rendering ---
+rendering:
+  dpi: 300
+  default_ink_color: "black"
+  default_paper_texture: "lined"
+  default_font_size: "medium"
+  stroke_width_base: 1.5

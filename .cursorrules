@@ -1,0 +1,22 @@
+# Inkforge AI Cursor Rules
+# This file configures Cursor AI to follow project conventions.
+
+# Project: Inkforge — LSTM+MDN handwriting synthesis engine (not a font renderer)
+# Stack: FastAPI + PyTorch + Celery/Redis (backend) | React 18 + Vite + Tailwind (frontend)
+
+# Stroke format: (Δx, Δy, p1, p2, p3) — relative deltas, mutually exclusive pen states
+# Model: 3-layer LSTM (hidden=512) + MDN (M=20 Gaussians), style conditioning z ∈ ℝ¹²⁸
+
+# Python: 3.10+, type hints required, Google docstrings, PEP 8, 100-char lines
+# JS/JSX: functional components only, Zustand state, Tailwind CSS, const by default
+
+# File rules:
+# - ML model code → backend/app/ml/ (NOT backend/app/models/)
+# - Pydantic schemas → backend/app/models/
+# - API routes → backend/app/api/routes/ (always async)
+# - React components → frontend/src/components/ (PascalCase.jsx)
+# - Inference must be async via Celery, never synchronous in routes
+
+# Never commit: .env, *.pt, *.pth, data/, checkpoints/
+# Never use: absolute stroke coords, class React components, inline styles
+# Always use: type hints, descriptive names, Conventional Commits

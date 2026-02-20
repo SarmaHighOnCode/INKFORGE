@@ -1,0 +1,62 @@
+# ============================================================
+# INKFORGE — LSTM+MDN Base Training Configuration
+# ============================================================
+# Usage: python train.py --config configs/lstm_mdn_base.yaml
+# ============================================================
+
+# --- Model Architecture (PRD Section 4.2.2) ---
+model:
+  vocab_size: 80                  # ASCII printable characters
+  char_embed_dim: 256             # Character embedding dimension
+  style_dim: 128                  # Style latent vector z ∈ ℝ¹²⁸
+  hidden_dim: 512                 # LSTM hidden state dimension
+  num_layers: 3                   # Number of LSTM layers
+  dropout: 0.2                    # Dropout probability
+  num_mixtures: 20                # MDN Gaussian mixture components (M=20)
+
+# --- Training ---
+training:
+  epochs: 100
+  batch_size: 64
+  learning_rate: 0.001
+  lr_scheduler: "cosine"          # cosine | step | plateau
+  lr_warmup_steps: 1000
+  gradient_clip_norm: 10.0        # Gradient clipping threshold
+  weight_decay: 0.0001
+  early_stopping_patience: 15
+
+# --- Data ---
+data:
+  data_dir: "data/processed/"
+  max_seq_len: 700                # Maximum stroke sequence length
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+  num_workers: 4
+  pin_memory: true
+
+# --- Augmentation ---
+augmentation:
+  enabled: true
+  elastic_distortion: true
+  affine_transform: true
+  velocity_jitter: 0.1
+  baseline_drift: 0.05
+
+# --- Checkpointing ---
+checkpointing:
+  save_dir: "checkpoints/"
+  save_every_n_epochs: 5
+  save_best_only: true            # Save only the best val loss checkpoint
+  checkpoint_name: "lstm_mdn_v1"
+
+# --- Logging ---
+logging:
+  log_dir: "runs/"
+  tensorboard: true
+  log_every_n_steps: 50
+  val_every_n_epochs: 1
+
+# --- Device ---
+device: "auto"                    # auto | cpu | cuda
+seed: 42
