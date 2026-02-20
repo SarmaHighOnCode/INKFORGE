@@ -9,9 +9,10 @@ model:
 
 # --- Generation Defaults ---
 generation:
-  max_seq_len: 2000               # Max stroke sequence length
+  max_seq_len: 2000               # Max stroke sequence length per line
   temperature: 0.4                # Default sampling temperature τ
   batch_size: 1                   # Single-sample inference
+  fatigue_simulation: 0.3         # Progressive degradation (0.0–1.0)
 
 # --- Style Presets ---
 # Precomputed style embeddings from clustered IAM writers
@@ -39,3 +40,17 @@ rendering:
   default_paper_texture: "lined"
   default_font_size: "medium"
   stroke_width_base: 1.5
+
+# --- Document Layout (Long-Form Generation) ---
+document_layout:
+  default_page_size: "a4"           # a4 | us_letter
+  margin_left_cm: 2.0               # Left margin (with natural drift ±0.1cm)
+  margin_right_cm: 1.5              # Right margin
+  margin_top_cm: 2.5                # Top margin
+  margin_bottom_cm: 2.0             # Bottom margin
+  line_spacing_mm: 8.0              # Base inter-line spacing (varies ±0.5mm)
+  paragraph_indent_cm: 1.5          # First-line indent per paragraph (±natural variation)
+  paragraph_spacing_multiplier: 1.2 # Vertical space between paragraphs (× line height)
+  max_lines_per_page: 30            # Maximum lines before page break
+  margin_drift_enabled: true        # Left margin drifts naturally (not ruler-straight)
+  line_spacing_drift_enabled: true  # Spacing loosens toward bottom of page

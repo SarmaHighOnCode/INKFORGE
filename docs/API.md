@@ -22,7 +22,7 @@ Submit a handwriting generation job.
 
 ```json
 {
-  "text": "Hello, world!",
+  "text": "Dear Ms. Johnson,\n\nThank you for taking the time to meet with us last Thursday. We truly appreciate your insights on the neighborhood and your commitment to finding the right home for your family.\n\nAs discussed, I've prepared a shortlist of three properties that match your criteria. Each one offers the open floor plan and backyard space you mentioned, and they're all within walking distance of Lincoln Elementary.\n\nI'd love to schedule viewings at your earliest convenience. Please don't hesitate to reach out if you have any questions in the meantime.\n\nWarm regards,\nJames",
   "style_id": "neat_cursive",
   "params": {
     "stroke_width_variation": 0.5,
@@ -30,11 +30,21 @@ Submit a handwriting generation job.
     "slant_angle": 5.0,
     "baseline_drift": 0.3,
     "ligature_enabled": true,
-    "fatigue_enabled": false,
+    "fatigue_simulation": 0.3,
     "ink_bleed": 0.2
   },
-  "paper_texture": "lined",
-  "ink_color": "black",
+  "layout": {
+    "page_size": "a4",
+    "margin_left_cm": 2.0,
+    "margin_right_cm": 1.5,
+    "margin_top_cm": 2.5,
+    "margin_bottom_cm": 2.0,
+    "line_spacing_mm": 8.0,
+    "paragraph_indent_cm": 1.5,
+    "paragraph_spacing_multiplier": 1.2
+  },
+  "paper_texture": "blank",
+  "ink_color": "blue",
   "font_size": "medium"
 }
 ```
@@ -194,8 +204,23 @@ Real-time stroke streaming during generation.
 | `slant_angle` | float | -30.0–30.0 | 5.0 | Global slant (degrees) |
 | `baseline_drift` | float | 0.0–1.0 | 0.3 | Y-axis noise |
 | `ligature_enabled` | bool | — | true | Stroke connections |
-| `fatigue_enabled` | bool | — | false | Progressive degradation |
+| `fatigue_simulation` | float | 0.0–1.0 | 0.3 | Progressive degradation over long passages |
 | `ink_bleed` | float | 0.0–1.0 | 0.2 | Edge diffusion |
+
+---
+
+## Document Layout Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `page_size` | string | `"a4"` | Page dimensions (`a4` or `us_letter`) |
+| `margin_left_cm` | float | 2.0 | Left margin in cm (with natural drift) |
+| `margin_right_cm` | float | 1.5 | Right margin in cm |
+| `margin_top_cm` | float | 2.5 | Top margin in cm |
+| `margin_bottom_cm` | float | 2.0 | Bottom margin in cm |
+| `line_spacing_mm` | float | 8.0 | Base inter-line spacing in mm (varies ±0.5mm naturally) |
+| `paragraph_indent_cm` | float | 1.5 | First-line indent per paragraph (with natural variation) |
+| `paragraph_spacing_multiplier` | float | 1.2 | Vertical spacing between paragraphs as multiplier of line height |
 
 ---
 
