@@ -22,6 +22,15 @@
 
 ---
 
+> [!IMPORTANT]
+> **Project Status Update — Core Infrastructure Complete, ML Model Pending**
+> 
+> The vast majority of the backend, frontend, streaming architecture, and testing suite is fully implemented and operational. However, the core **PyTorch LSTM+MDN Handwriting Synthesis Model** has *not* been trained yet. 
+> * The system currently defaults to `ENGINE_BACKEND=mock` in the `.env` file to simulate handwriting generation for testing.
+> * **Next step for full operation:** Run `scripts/download_iam.py` and `train.py` to generate the `.pt` checkpoint file, then switch the `.env` backend to `lstm`.
+
+---
+
 ## Table of Contents
 
 - [Executive Summary](#executive-summary)

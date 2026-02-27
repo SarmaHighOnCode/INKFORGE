@@ -2,16 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Inkforge — Global Styles */
+/* ─── INKFORGE — Design System ─── */
 
 :root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-tertiary: #191919;
+  --bg-hover: #1f1f1f;
+  --bg-active: #262626;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text-primary: #ececec;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #666666;
+  --text-muted: #444444;
+
+  --accent: #e5e5e5;
+  --accent-hover: #ffffff;
+
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
+
   --ink-black: #1a1a2e;
   --ink-blue: #0066cc;
   --ink-dark-blue: #003366;
   --ink-sepia: #704214;
   --paper-white: #fefefe;
-  --paper-cream: #f5f0e8;
-  --paper-aged: #e8dcc8;
+
+  --radius: 10px;
+  --radius-sm: 6px;
 }
 
 * {
@@ -21,7 +44,152 @@
 }
 
 body {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ─── Input resets ─── */
+
+textarea,
+select,
+input[type="text"] {
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea:focus,
+select:focus,
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+}
+
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+select {
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+/* ─── Range slider ─── */
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  background: var(--border-default);
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  margin-top: -5.5px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: var(--text-primary);
+  transform: scale(1.15);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 3px;
+  background: var(--border-default);
+  border-radius: 2px;
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  border: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+  background: var(--text-primary);
+  transform: scale(1.15);
+}
+
+/* ─── Checkbox ─── */
+
+input[type="checkbox"] {
+  accent-color: var(--text-secondary);
+}
+
+/* ─── Scrollbar ─── */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ─── Animations ─── */
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
 }

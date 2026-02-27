@@ -5,8 +5,9 @@ Defines all API data models for request validation and response serialization.
 """
 
 from enum import Enum
+from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ============================================================
@@ -78,14 +79,29 @@ class HumanizationParams(BaseModel):
         default=True,
         description="Enable contextual stroke connections between adjacent characters.",
     )
-    fatigue_enabled: bool = Field(
-        default=False,
-        description="Increasing noise over token position — simulates writing fatigue.",
+    fatigue_simulation: float = Field(
+        default=0.3, ge=0.0, le=1.0,
+        description="Progressive degradation over long passages (0=none, 1=heavy).",
+    )
+    # DEPRECATED: use fatigue_simulation instead. Retained for backward compatibility.
+    fatigue_enabled: Optional[bool] = Field(
+        default=None,
+        description="Deprecated — use fatigue_simulation (float). Accepted for backward compatibility.",
     )
     ink_bleed: float = Field(
         default=0.2, ge=0.0, le=1.0,
         description="Post-render Gaussian diffusion on stroke edges.",
     )
+
+    @model_validator(mode="before")
+    @classmethod
+    def _migrate_fatigue_enabled(cls, values):  # noqa: N805
+        """Translate legacy fatigue_enabled bool into fatigue_simulation float."""
+        if isinstance(values, dict):
+            fe = values.get("fatigue_enabled")
+            if fe is not None and "fatigue_simulation" not in values:
+                values["fatigue_simulation"] = 0.3 if fe else 0.0
+        return values
 
 
 # ============================================================
@@ -141,6 +157,7 @@ class GenerateResponse(BaseModel):
     """Response body for POST /generate."""
     job_id: str
     ws_url: str = Field(description="WebSocket URL for real-time stroke streaming.")
+    stream_url: str = Field(default="", description="SSE stream URL for real-time stroke streaming (HTTP fallback).")
     status: str = Field(default="queued")
 
 
@@ -151,7 +168,7 @@ class ExportResponse(BaseModel):
     file_size_bytes: int | None = None
 
 
-class JobStatus(BaseModel):
+class JobStatusResponse(BaseModel):
     """Response body for GET /job/{job_id}."""
     job_id: str
     status: str = Field(description="queued | processing | complete | failed")
@@ -160,3 +177,22 @@ class JobStatus(BaseModel):
         description="Generation progress (0.0 to 1.0).",
     )
     error: str | None = None
+
+
+class StreamEvent(BaseModel):
+    """A single SSE event in the stroke stream."""
+    type: str = Field(description="Event type: 'stroke' | 'complete' | 'error'")
+    index: int | None = Field(default=None, description="Stroke sequence index.")
+    data: dict | None = Field(default=None, description="Stroke data payload.")
+
+
+class EngineStatusResponse(BaseModel):
+    """Engine health status for the /health endpoint."""
+    model_loaded: bool
+    model_name: str
+    engine_backend: str
+    device: str
+    quantization: str
+    vram_allocated_gb: float
+    active_requests: int
+    uptime_seconds: float

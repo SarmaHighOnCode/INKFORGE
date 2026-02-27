@@ -1,0 +1,17 @@
+# INKFORGE - Hugging Face Spaces Requirements
+# For deployment to Hugging Face Spaces
+
+# Core ML
+torch>=2.1.0
+numpy>=1.26.0
+
+# Web Interface
+gradio>=4.0.0
+
+# Rendering
+CairoSVG>=2.7.0
+Pillow>=10.2.0
+svgwrite>=1.4.3
+
+# Utilities
+pyyaml>=6.0.0

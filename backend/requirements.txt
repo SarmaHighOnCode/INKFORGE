@@ -6,7 +6,11 @@
 fastapi>=0.110.0,<1.0.0
 uvicorn[standard]>=0.27.0,<1.0.0
 pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0,<3.0.0
 python-dotenv>=1.0.0,<2.0.0
+
+# --- SSE Streaming ---
+sse-starlette>=2.0.0,<3.0.0
 
 # --- WebSocket ---
 websockets>=12.0,<13.0
@@ -30,3 +34,8 @@ svgwrite>=1.4.3,<2.0.0
 pyyaml>=6.0.0,<7.0.0
 httpx>=0.26.0,<1.0.0
 python-multipart>=0.0.6,<1.0.0
+tqdm>=4.66.0,<5.0.0
+requests>=2.31.0,<3.0.0
+
+# --- Web Demo (Gradio) ---
+gradio>=4.0.0,<5.0.0
