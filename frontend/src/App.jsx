@@ -54,6 +54,7 @@ function App() {
     const [error, setError] = useState(null);
     const [charCount, setCharCount] = useState(0);
     const [inkColor, setInkColor] = useState("black");
+    const [strokeWidth, setStrokeWidth] = useState(0.5);
 
     const canvasRef = useRef(null);
     const abortRef = useRef(null);
@@ -116,7 +117,7 @@ function App() {
                     character_inconsistency: f.character_inconsistency,
                     slant_angle: f.slant_angle,
                     baseline_drift: f.baseline_drift,
-                    ink_bleed: f.ink_bleed,
+                    fatigue_simulation: f.ink_bleed, // map the UI slider
                     ligature_enabled: f.ligature_enabled,
                 },
                 paper_texture: f.paper_texture,
@@ -165,9 +166,11 @@ function App() {
     const setField = (key) => (e) => {
         const val = e.target.type === "checkbox" ? e.target.checked : e.target.value;
         formRef.current[key] = e.target.type === "range" ? parseFloat(val) : val;
-        // Sync ink color to state so CanvasBoard gets the updated value
+        // Sync visual styles to state so CanvasBoard gets the updated value
         if (key === "ink_color") {
             setInkColor(val);
+        } else if (key === "stroke_width_variation") {
+            setStrokeWidth(parseFloat(val));
         }
     };
 
@@ -338,20 +341,20 @@ function App() {
                         </div>
                     )}
 
-                    {/* Canvas Area */}
-                    <div
-                        className="flex-1 flex items-start justify-center rounded-xl p-6"
-                        style={{
-                            background: "var(--bg-secondary)",
-                            border: "1px solid var(--border-subtle)",
-                        }}
-                    >
-                        <CanvasBoard
-                            ref={canvasRef}
-                            width={800}
-                            height={600}
-                            inkColor={inkColor}
-                        />
+                    {/* ─── Canvas Area ─── */}
+                    <div className="flex-1 p-6 flex flex-col items-center justify-center relative overflow-hidden">
+                        <div
+                            className="w-full max-w-[900px] h-[600px] shadow-2xl transition-all duration-300 relative flex items-center justify-center"
+                            style={{ background: formRef.current?.paper_texture === "blank" ? "#fefefe" : "#f4f4f4" }}
+                        >
+                            <CanvasBoard
+                                ref={canvasRef}
+                                width={900}
+                                height={600}
+                                inkColor={inkColor}
+                                strokeWidthVariation={strokeWidth}
+                            />
+                        </div>
                     </div>
                 </main>
             </div>

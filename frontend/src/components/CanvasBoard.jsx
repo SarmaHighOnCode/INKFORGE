@@ -23,7 +23,7 @@ const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
 
 const CanvasBoard = forwardRef(function CanvasBoard(
-    { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT, inkColor = "black" },
+    { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT, inkColor = "black", strokeWidthVariation = 0.5 },
     ref
 ) {
     const canvasRef = useRef(null);
@@ -31,6 +31,12 @@ const CanvasBoard = forwardRef(function CanvasBoard(
 
     // Mutable cursor position — never triggers a render
     const cursorRef = useRef({ x: 40, y: 40 });
+
+    // Helper to calculate line width
+    const getLineWidth = (variation) => {
+        // Map 0-1 variation to 1.0 - 2.8 context line width
+        return 1.0 + (variation * 1.8);
+    };
 
     // Initialize canvas context once on mount or when dimensions change
     useEffect(() => {
@@ -40,7 +46,7 @@ const CanvasBoard = forwardRef(function CanvasBoard(
         const ctx = canvas.getContext("2d");
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        ctx.lineWidth = 1.8;
+        ctx.lineWidth = getLineWidth(strokeWidthVariation);
         ctx.strokeStyle = INK_COLORS[inkColor] || INK_COLORS.black;
         ctxRef.current = ctx;
 
@@ -48,15 +54,16 @@ const CanvasBoard = forwardRef(function CanvasBoard(
         ctx.clearRect(0, 0, width, height);
         ctx.beginPath();
         ctx.moveTo(cursorRef.current.x, cursorRef.current.y);
-    }, [width, height]); // Note: inkColor excluded - handled separately
+    }, [width, height]); // Exclude style paints so we don't clear midway
 
-    // Update ink color without clearing canvas
+    // Update styling properties dynamically without clearing canvas
     useEffect(() => {
         const ctx = ctxRef.current;
         if (ctx) {
             ctx.strokeStyle = INK_COLORS[inkColor] || INK_COLORS.black;
+            ctx.lineWidth = getLineWidth(strokeWidthVariation);
         }
-    }, [inkColor]);
+    }, [inkColor, strokeWidthVariation]);
 
     // Expose imperative methods to parent via ref
     useImperativeHandle(

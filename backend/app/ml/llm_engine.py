@@ -491,9 +491,9 @@ class LLMEngine:
                 cursor_y += line_height + random.uniform(-1.5, 1.5)
                 line_num += 1
 
-            # Baseline drift
-            global_drift = baseline_drift * 3.0 * math.sin(
-                2 * math.pi * line_num / 10.0 + random.uniform(0, 0.5)
+            # Baseline drift (Exaggerated for visual awareness in mock mode)
+            global_drift = baseline_drift * 8.0 * math.sin(
+                2 * math.pi * line_num / max(total_words / 5.0, 3.0) + random.uniform(0, 0.5)
             )
 
             char_x = cursor_x
