@@ -386,7 +386,7 @@ def main() -> None:
         samples_by_writer[writer_id].append(sample)
         stats["success"] += 1
 
-    print(f"\nProcessing stats:")
+    print("\nProcessing stats:")
     print(f"  Total files:    {stats['total']}")
     print(f"  Successful:     {stats['success']}")
     print(f"  Skipped:        {stats['skipped']}")

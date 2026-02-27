@@ -4,7 +4,6 @@ INKFORGE — API Tests
 Tests for FastAPI endpoints: /generate, /export, /styles, /health.
 """
 
-import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app

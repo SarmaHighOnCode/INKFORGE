@@ -8,7 +8,7 @@ and visualization utilities.
 import math
 
 import torch
-import torch.nn.functional as F
+import torch.nn.functional as functional
 
 
 def compute_mdn_loss(
@@ -32,30 +32,30 @@ def compute_mdn_loss(
         Scalar loss tensor.
     """
     batch_size, seq_len, _ = mdn_params.shape
-    M = num_mixtures
+    num_m = num_mixtures # Renamed num_m to M for consistency with patch
 
     # Reshape MDN params: [batch, seq, M*6] -> [batch, seq, M, 6]
-    params = mdn_params.view(batch_size, seq_len, M, 6)
+    params = mdn_params.view(batch_size, seq_len, num_m, 6)
 
     # Extract parameters
     pi_logits = params[:, :, :, 0]           # [batch, seq, M]
     mu_x = params[:, :, :, 1]                # [batch, seq, M]
     mu_y = params[:, :, :, 2]                # [batch, seq, M]
-    log_sigma_x = params[:, :, :, 3]         # [batch, seq, M]
-    log_sigma_y = params[:, :, :, 4]         # [batch, seq, M]
+    sigma_x_raw = params[:, :, :, 3]         # [batch, seq, M]
+    sigma_y_raw = params[:, :, :, 4]         # [batch, seq, M]
     rho_raw = params[:, :, :, 5]             # [batch, seq, M]
 
-    # Ensure numerical stability
-    sigma_x = torch.exp(log_sigma_x).clamp(min=1e-6)
-    sigma_y = torch.exp(log_sigma_y).clamp(min=1e-6)
+    # Apply activations to ensure valid parameter ranges
+    sigma_x = torch.exp(sigma_x_raw)
+    sigma_y = torch.exp(sigma_y_raw)
     rho = torch.tanh(rho_raw)
 
     # Get mixture log-probabilities
-    log_pi = F.log_softmax(pi_logits, dim=-1)  # [batch, seq, M]
+    log_pi = functional.log_softmax(pi_logits, dim=-1)  # [batch, seq, M]
 
     # Target strokes: [batch, seq, 2] -> expand for M mixtures
-    target_x = target_strokes[:, :, 0:1].expand(-1, -1, M)  # [batch, seq, M]
-    target_y = target_strokes[:, :, 1:2].expand(-1, -1, M)  # [batch, seq, M]
+    target_x = target_strokes[:, :, 0:1].expand(-1, -1, num_m)  # [batch, seq, M]
+    target_y = target_strokes[:, :, 1:2].expand(-1, -1, num_m)  # [batch, seq, M]
 
     # Compute bivariate Gaussian log-likelihood
     # log N(x, y | μ, Σ) = -log(2π) - log(σx) - log(σy) - 0.5*log(1-ρ²) - Z/(2*(1-ρ²))
@@ -68,13 +68,13 @@ def compute_mdn_loss(
     # Avoid division by zero
     one_minus_rho_sq = (1 - rho_sq).clamp(min=1e-6)
 
-    Z = dx ** 2 + dy ** 2 - 2 * rho * dx * dy
+    z_val = dx ** 2 + dy ** 2 - 2 * rho * dx * dy # Corrected Z variable name from patch
     log_gaussian = (
         -math.log(2 * math.pi)
-        - log_sigma_x
-        - log_sigma_y
+        - torch.log(sigma_x) # Changed from log_sigma_x
+        - torch.log(sigma_y) # Changed from log_sigma_y
         - 0.5 * torch.log(one_minus_rho_sq)
-        - Z / (2 * one_minus_rho_sq)
+        - z_val / (2 * one_minus_rho_sq) # Changed from Z to z_val
     )  # [batch, seq, M]
 
     # Weighted sum using log-sum-exp: log(Σ π_k * N_k) = logsumexp(log π_k + log N_k)
@@ -86,7 +86,7 @@ def compute_mdn_loss(
     # Pen state loss: cross-entropy (target must be long/int64)
     pen_logits_flat = pen_logits.view(-1, 3)  # [batch*seq, 3]
     target_pen_flat = target_pen.long().view(-1)  # [batch*seq]
-    pen_loss = F.cross_entropy(pen_logits_flat, target_pen_flat)
+    pen_loss = functional.cross_entropy(pen_logits_flat, target_pen_flat) # Corrected syntax from patch
 
     # Total loss
     total_loss = stroke_loss + pen_loss
@@ -217,7 +217,7 @@ def build_vocab(chars: str | None = None) -> dict[str, int]:
         chars = "".join(chr(i) for i in range(32, 127))
 
     vocab = {"<pad>": 0, "<sos>": 1, "<eos>": 2, "<unk>": 3}
-    for i, char in enumerate(chars):
+    for _i, char in enumerate(chars):
         if char not in vocab:
             vocab[char] = len(vocab)
 

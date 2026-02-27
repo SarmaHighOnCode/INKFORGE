@@ -10,7 +10,6 @@ Usage:
 """
 
 import io
-import os
 from pathlib import Path
 
 import gradio as gr
@@ -22,7 +21,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent))
 
 from backend.app.ml.model import HandwritingLSTM
-from backend.app.ml.utils import build_vocab, strokes_to_absolute
+from backend.app.ml.utils import build_vocab
 from backend.app.services.renderer import Renderer
 
 
@@ -197,7 +196,6 @@ def generate_handwriting(
         return Image.new("RGB", (800, 200), "white")
 
     # Render to image
-    add_lines = paper_style == "lined"
     paper_color = "white" if paper_style == "lined" else paper_style
 
     image = RENDERER.render_to_image(

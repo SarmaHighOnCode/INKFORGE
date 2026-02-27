@@ -8,18 +8,15 @@ Usage:
     python setup_hf.py
 """
 
-import shutil
 from pathlib import Path
 
 
-def setup_huggingface_space():
+def setup_huggingface_repo():
     """Prepare files for Hugging Face Spaces deployment."""
 
-    print("INKFORGE — Hugging Face Space Setup")
-    print("=" * 50)
+    print("Setting up HuggingFace Space repository...")
 
     # 1. Copy SPACE_README.md to README.md for HF (backup original)
-    readme_path = Path("README.md")
     space_readme = Path("SPACE_README.md")
 
     if space_readme.exists():
@@ -59,4 +56,4 @@ def setup_huggingface_space():
 
 
 if __name__ == "__main__":
-    setup_huggingface_space()
+    setup_huggingface_repo()

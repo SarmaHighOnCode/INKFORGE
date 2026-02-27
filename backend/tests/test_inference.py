@@ -5,8 +5,6 @@ Tests for the ML inference pipeline: model loading, tokenization,
 stroke generation, and MDN sampling.
 """
 
-import pytest
-import torch
 
 from app.ml.model import HandwritingLSTM, StyleEncoder
 

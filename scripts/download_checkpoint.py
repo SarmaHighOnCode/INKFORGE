@@ -33,7 +33,7 @@ def main() -> None:
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Inkforge — Checkpoint Download")
+    print("Inkforge — Checkpoint Download")
     print(f"Model: {args.model}")
     print(f"Output: {output_dir}")
 

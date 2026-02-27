@@ -157,11 +157,11 @@ class HandwritingLSTM(nn.Module):
         Returns:
             Single stroke tuple (Δx, Δy, p1, p2, p3).
         """
-        M = self.num_mixtures
+        num_m = self.num_mixtures
 
         # 1. Extract MDN parameters: π, μx, μy, σx, σy, ρ
         # Each component has 6 params, total = M*6
-        params = mdn_params.view(M, 6)
+        params = mdn_params.view(num_m, 6)
 
         pi_logits = params[:, 0]          # Mixture weights (logits)
         mu_x = params[:, 1]               # Mean x

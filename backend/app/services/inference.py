@@ -11,8 +11,7 @@ from pathlib import Path
 import torch
 
 from ..ml.model import HandwritingLSTM
-from ..ml.utils import build_vocab, tokenize, strokes_to_absolute
-
+from ..ml.utils import build_vocab, tokenize
 
 # Precomputed style embeddings for MVP presets (z ∈ ℝ¹²⁸)
 # These would be clustered from IAM writer embeddings in production

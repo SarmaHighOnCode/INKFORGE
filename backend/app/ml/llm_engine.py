@@ -24,10 +24,11 @@ import logging
 import math
 import random
 import time
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, AsyncGenerator
+from typing import Any
 
 logger = logging.getLogger("inkforge.engine")
 
@@ -497,24 +498,24 @@ class LLMEngine:
             )
 
             char_x = cursor_x
-            for char_idx, char in enumerate(word):
+            for _char_idx, char in enumerate(word):
                 fatigue_factor = 1.0 + fatigue * (word_idx / max(total_words, 1))
 
                 # Generate a small scribble for the character (~15 strokes)
                 num_strokes = max(1, int(random.gauss(15, 3)))
                 char_width_target = max(0.5, random.gauss(8.0, 2.0 * temperature * fatigue_factor))
-                
+
                 # We need to end up char_width_target to the right
                 dx_base = char_width_target / num_strokes
-                
+
                 for step in range(num_strokes):
                     # Progress through the character 0.0 -> 1.0
                     t = step / num_strokes
-                    
+
                     # Create some loops and zig-zags
                     # dx is mostly forward, but occasionally backwards
                     dx = random.gauss(dx_base, 1.0 * temperature)
-                    
+
                     # dy oscillates to draw height
                     # frequency is roughly 2-3 up/down sweeps per character
                     freq = random.uniform(2.0, 3.0)

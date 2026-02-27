@@ -5,10 +5,8 @@ Defines all API data models for request validation and response serialization.
 """
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, Field, model_validator
-
 
 # ============================================================
 # Enums
@@ -84,7 +82,7 @@ class HumanizationParams(BaseModel):
         description="Progressive degradation over long passages (0=none, 1=heavy).",
     )
     # DEPRECATED: use fatigue_simulation instead. Retained for backward compatibility.
-    fatigue_enabled: Optional[bool] = Field(
+    fatigue_enabled: bool | None = Field(
         default=None,
         description="Deprecated — use fatigue_simulation (float). Accepted for backward compatibility.",
     )

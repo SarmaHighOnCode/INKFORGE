@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
+# ruff: noqa: T201
 """
-INKFORGE — Comprehensive Backend Test Script
+INKFORGE — Backend Test Suite
 
 Tests all endpoints against a running server.
 Run with: python tests/test_backend.py
@@ -9,8 +11,8 @@ Requires the server to be running on localhost:8000
 
 import json
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 
 BASE = "http://localhost:8000"
 PASSED = 0
@@ -241,7 +243,7 @@ def t_stream_paragraphs():
 
     strokes = [e for e in events if e["type"] == "stroke"]
     completes = [e for e in events if e["type"] == "complete"]
-    assert len(strokes) > 0, f"No strokes produced"
+    assert len(strokes) > 0, "No strokes produced"
     assert len(completes) == 1, f"Expected 1 complete event, got {len(completes)}"
     assert completes[0]["lines"] >= 2, f"Expected >= 2 lines, got {completes[0]['lines']}"
 

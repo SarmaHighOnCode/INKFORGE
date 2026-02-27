@@ -19,7 +19,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
 
 from .utils import build_vocab, tokenize
@@ -120,10 +119,10 @@ class IAMStrokeDataset(Dataset):
         for stroke_file in split_dir.glob("*.npz"):
             try:
                 data = np.load(stroke_file, allow_pickle=False)
-                
+
                 # Check membership safely using 'in'
                 writer_id = int(data["writer_id"]) if "writer_id" in data else 0
-                
+
                 # Carefully extract and decode text to avoid b'...' strings
                 text_val = data["text"]
                 if hasattr(text_val, "item"):
@@ -138,7 +137,7 @@ class IAMStrokeDataset(Dataset):
                     "text": text_str,
                     "writer_id": writer_id,
                 })
-            except Exception as e:
+            except Exception:
                 # Skip files that cannot be loaded without pickle or have other errors
                 continue
 

@@ -123,7 +123,7 @@ def download_file(
 
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 401:
-            print(f"Authentication failed. Please check your credentials.")
+            print("Authentication failed. Please check your credentials.")
         else:
             print(f"HTTP error: {e}")
         return False

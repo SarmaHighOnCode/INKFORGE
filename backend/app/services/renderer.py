@@ -6,13 +6,11 @@ using CairoSVG and Pillow at 300 DPI print resolution.
 """
 
 import io
-import math
 from pathlib import Path
 
 import cairosvg
-from PIL import Image
 import svgwrite
-
+from PIL import Image
 
 # Paper sizes in mm
 PAPER_SIZES = {
@@ -122,7 +120,7 @@ class Renderer:
         current_path_points = []
         paths = []
 
-        for i, (dx, dy, p1, p2, p3) in enumerate(strokes):
+        for _i, (dx, dy, p1, _p2, p3) in enumerate(strokes):
             x += dx * scale
             y += dy * scale
 
@@ -203,11 +201,12 @@ class Renderer:
             strokes = word_info["strokes"]
             pos_x, pos_y = word_info["position"]
 
+            # Path building
             x, y = pos_x, pos_y
             current_path_points = []
             paths = []
 
-            for dx, dy, p1, p2, p3 in strokes:
+            for dx, dy, p1, _p2, p3 in strokes:
                 x += dx * scale
                 y += dy * scale
 
@@ -434,11 +433,12 @@ class Renderer:
         dwg.add(dwg.rect(insert=(0, 0), size=(width, height), fill=bg))
 
         # Convert strokes
-        x, y = padding, padding
+        x, y = 0.0, stroke_width / scale
+
         current_path_points = []
         paths = []
 
-        for dx, dy, p1, p2, p3 in strokes:
+        for dx, dy, p1, _p2, p3 in strokes:
             x += dx * scale
             y += dy * scale
 
