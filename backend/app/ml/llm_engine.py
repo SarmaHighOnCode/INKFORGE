@@ -37,8 +37,10 @@ logger = logging.getLogger("inkforge.engine")
 # Engine Configuration
 # ============================================================
 
+
 class QuantizationMode(str, Enum):
     """Quantization strategy for model weights."""
+
     NONE = "fp16"
     INT8 = "int8"
     INT4 = "int4"
@@ -51,6 +53,7 @@ class EngineConfig:
     Maps directly to Settings fields — separated so the engine
     has no hard dependency on FastAPI/Pydantic.
     """
+
     model_name: str = "inkforge-lstm-mdn-v1"
     checkpoint_path: str = "checkpoints/lstm_mdn_v1_best.pt"
     device: str = "cpu"
@@ -66,6 +69,7 @@ class EngineConfig:
 @dataclass
 class EngineStatus:
     """Runtime status snapshot of the engine."""
+
     model_loaded: bool = False
     model_name: str = ""
     engine_backend: str = "mock"
@@ -86,6 +90,7 @@ class EngineStatus:
 # ============================================================
 # Singleton LLM Engine
 # ============================================================
+
 
 class LLMEngine:
     """
@@ -179,10 +184,11 @@ class LLMEngine:
             if config.device == "cuda":
                 try:
                     import torch
+
                     if torch.cuda.is_available():
                         self._gpu_name = torch.cuda.get_device_name(0)
                         self._vram_total_gb = round(
-                            torch.cuda.get_device_properties(0).total_memory / (1024 ** 3), 1
+                            torch.cuda.get_device_properties(0).total_memory / (1024**3), 1
                         )
                         logger.info(f"  → CUDA device found: {self._gpu_name}")
                         logger.info(f"  → Total VRAM: {self._vram_total_gb} GB")
@@ -272,6 +278,7 @@ class LLMEngine:
             # Clear CUDA cache if available
             try:
                 import torch
+
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
             except ImportError:
@@ -493,8 +500,12 @@ class LLMEngine:
                 line_num += 1
 
             # Baseline drift (Exaggerated for visual awareness in mock mode)
-            global_drift = baseline_drift * 8.0 * math.sin(
-                2 * math.pi * line_num / max(total_words / 5.0, 3.0) + random.uniform(0, 0.5)
+            global_drift = (
+                baseline_drift
+                * 8.0
+                * math.sin(
+                    2 * math.pi * line_num / max(total_words / 5.0, 3.0) + random.uniform(0, 0.5)
+                )
             )
 
             char_x = cursor_x
@@ -543,7 +554,7 @@ class LLMEngine:
                     char_x += dx
 
                     delay = config.stream_chunk_delay_ms / 1000.0
-                    delay *= random.uniform(0.2, 0.8) # faster for mock strokes
+                    delay *= random.uniform(0.2, 0.8)  # faster for mock strokes
                     await asyncio.sleep(delay)
 
             # Pen-up between words
@@ -580,8 +591,7 @@ class LLMEngine:
         }
 
         logger.info(
-            f"[req-{request_id}] Complete (mock): "
-            f"{stroke_index} strokes, {line_num + 1} lines"
+            f"[req-{request_id}] Complete (mock): {stroke_index} strokes, {line_num + 1} lines"
         )
 
     # --------------------------------------------------------

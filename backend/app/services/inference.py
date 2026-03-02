@@ -85,7 +85,9 @@ class InferenceService:
             self.model = torch.jit.load(self.checkpoint_path, map_location=self.device)
         else:
             # Load regular checkpoint
-            checkpoint = torch.load(self.checkpoint_path, map_location=self.device, weights_only=True)
+            checkpoint = torch.load(
+                self.checkpoint_path, map_location=self.device, weights_only=True
+            )
 
             # Initialize model
             model_config = checkpoint.get("model_config", {})
@@ -174,13 +176,13 @@ class InferenceService:
                 )
             style_z = style_embedding.to(self.device)
         else:
-            raise ValueError(
-                f"style_embedding must be 1D or 2D, got {style_embedding.dim()}D"
-            )
+            raise ValueError(f"style_embedding must be 1D or 2D, got {style_embedding.dim()}D")
 
         # Tokenize text
         char_indices = self._tokenize(text)
-        char_seq = torch.tensor([char_indices], dtype=torch.long, device=self.device)  # [1, text_len]
+        char_seq = torch.tensor(
+            [char_indices], dtype=torch.long, device=self.device
+        )  # [1, text_len]
 
         # Generate strokes autoregressively
         strokes = []
@@ -192,7 +194,7 @@ class InferenceService:
         with torch.no_grad():
             for char_idx in range(len(char_indices)):
                 # Get current character
-                current_char = char_seq[:, char_idx:char_idx + 1]  # [1, 1]
+                current_char = char_seq[:, char_idx : char_idx + 1]  # [1, 1]
 
                 # Generate strokes for this character
                 char_strokes = 0
@@ -411,12 +413,14 @@ class DocumentGenerator:
                 # Apply baseline drift (sine wave)
                 y_offset = baseline_drift * 2 * math.sin(line_number * 0.5 + para_idx)
 
-                all_strokes.append({
-                    "word": word,
-                    "strokes": strokes,
-                    "position": (cursor_x, cursor_y + y_offset),
-                    "line_number": line_number,
-                })
+                all_strokes.append(
+                    {
+                        "word": word,
+                        "strokes": strokes,
+                        "position": (cursor_x, cursor_y + y_offset),
+                        "line_number": line_number,
+                    }
+                )
 
                 # Advance cursor
                 cursor_x += word_width + 4.0 + (torch.randn(1).item() * 1.5)  # Word spacing

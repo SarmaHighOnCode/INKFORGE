@@ -48,35 +48,27 @@ worker.conf.update(
     result_serializer="json",
     timezone="UTC",
     enable_utc=True,
-
     # Task tracking
     task_track_started=True,
-
     # --- GPU-CRITICAL SETTINGS ---
     # Hard limit: 120s for long documents (multi-page generation)
     task_time_limit=120,
     # Soft limit: 90s — task gets SoftTimeLimitExceeded, can gracefully save state
     task_soft_time_limit=90,
-
     # ONE task at a time per worker — prevents CUDA OOM
     # To scale: run multiple workers across multiple GPUs
     worker_concurrency=1,
-
     # Fetch one task at a time — no prefetching on GPU workers
     worker_prefetch_multiplier=1,
-
     # Recycle worker after 50 tasks to prevent VRAM fragmentation / memory leaks
     worker_max_tasks_per_child=50,
-
     # Memory guard: kill worker if it exceeds 20 GB resident memory
     # (model ~14 GB + KV cache ~2 GB + overhead)
     worker_max_memory_per_child=20_000_000,  # 20 GB in KB
-
     # Late ACK: only acknowledge task AFTER completion
     # Prevents task loss if worker crashes mid-inference
     task_acks_late=True,
     task_reject_on_worker_lost=True,
-
     # Result expiration: clean up after 1 hour
     result_expires=3600,
 )
@@ -124,7 +116,7 @@ def on_worker_init(**kwargs):
         kv_cache_size_gb=settings.kv_cache_size_gb,
         max_seq_len=settings.max_seq_len,
         max_concurrent_requests=1,  # Celery worker: always 1
-        stream_chunk_delay_ms=0,    # No delay needed for batch processing
+        stream_chunk_delay_ms=0,  # No delay needed for batch processing
     )
 
     # Run async init in sync context
@@ -158,6 +150,7 @@ def on_worker_shutdown(**kwargs):
 # ============================================================
 # Tasks
 # ============================================================
+
 
 @worker.task(
     bind=True,
@@ -194,8 +187,7 @@ def generate_handwriting(
 
     if _worker_engine is None or not _worker_engine.is_ready:
         raise RuntimeError(
-            "LLM Engine not initialized. "
-            "Ensure worker_init signal loaded the model."
+            "LLM Engine not initialized. Ensure worker_init signal loaded the model."
         )
 
     task_id = self.request.id
@@ -229,10 +221,7 @@ def generate_handwriting(
 
     elapsed_ms = round((time.monotonic() - start_time) * 1000, 1)
 
-    logger.info(
-        f"Task {task_id}: complete — "
-        f"{len(strokes)} strokes in {elapsed_ms}ms"
-    )
+    logger.info(f"Task {task_id}: complete — {len(strokes)} strokes in {elapsed_ms}ms")
 
     return {
         "job_id": task_id,

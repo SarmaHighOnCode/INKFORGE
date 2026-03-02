@@ -111,6 +111,7 @@ def t_root():
     assert data["status"] == "operational"
     assert "engine" in data  # May be "mock", "lstm", "vllm", etc.
 
+
 test("GET / returns app info", t_root)
 
 
@@ -129,6 +130,7 @@ def t_health():
     assert isinstance(data["inference"]["active_requests"], int)
     assert isinstance(data["inference"]["uptime_seconds"], float)
 
+
 test("GET /health returns full engine status", t_health)
 
 
@@ -144,28 +146,33 @@ def t_gen_minimal():
     assert data["status"] == "queued"
     assert len(data["job_id"]) == 36
 
+
 test("POST /api/generate with minimal body", t_gen_minimal)
 
 
 def t_gen_full():
-    data, status = post("/api/generate", {
-        "text": "Dear Ms. Johnson,\n\nThank you for the meeting.",
-        "style_id": "elegant_formal",
-        "params": {
-            "stroke_width_variation": 0.7,
-            "character_inconsistency": 0.3,
-            "slant_angle": 10.0,
-            "baseline_drift": 0.5,
-            "ligature_enabled": True,
-            "fatigue_simulation": 0.6,
-            "ink_bleed": 0.3,
+    data, status = post(
+        "/api/generate",
+        {
+            "text": "Dear Ms. Johnson,\n\nThank you for the meeting.",
+            "style_id": "elegant_formal",
+            "params": {
+                "stroke_width_variation": 0.7,
+                "character_inconsistency": 0.3,
+                "slant_angle": 10.0,
+                "baseline_drift": 0.5,
+                "ligature_enabled": True,
+                "fatigue_simulation": 0.6,
+                "ink_bleed": 0.3,
+            },
+            "paper_texture": "blank",
+            "ink_color": "blue",
+            "font_size": "large",
         },
-        "paper_texture": "blank",
-        "ink_color": "blue",
-        "font_size": "large",
-    })
+    )
     assert status == 202
     assert data["status"] == "queued"
+
 
 test("POST /api/generate with full params", t_gen_full)
 
@@ -174,6 +181,7 @@ def t_gen_empty():
     code = post_error_code("/api/generate", {"text": ""})
     assert code == 422, f"Expected 422, got {code}"
 
+
 test("POST /api/generate rejects empty text (422)", t_gen_empty)
 
 
@@ -181,15 +189,20 @@ def t_gen_missing():
     code = post_error_code("/api/generate", {})
     assert code == 422, f"Expected 422, got {code}"
 
+
 test("POST /api/generate rejects missing text (422)", t_gen_missing)
 
 
 def t_gen_bad_params():
-    code = post_error_code("/api/generate", {
-        "text": "Hello",
-        "params": {"slant_angle": 999},
-    })
+    code = post_error_code(
+        "/api/generate",
+        {
+            "text": "Hello",
+            "params": {"slant_angle": 999},
+        },
+    )
     assert code == 422, f"Expected 422, got {code}"
+
 
 test("POST /api/generate rejects out-of-range params (422)", t_gen_bad_params)
 
@@ -218,6 +231,7 @@ def t_stream_basic():
     comp = completes[0]
     assert comp["total_strokes"] > 0
 
+
 test("SSE stream returns strokes + completion event", t_stream_basic)
 
 
@@ -232,13 +246,17 @@ def t_stream_long():
     assert len(strokes) > 20, f"Expected 20+ strokes, got {len(strokes)}"
     assert len(completes) == 1
 
+
 test("SSE stream with long text -- multi-word layout", t_stream_long)
 
 
 def t_stream_paragraphs():
-    data, _ = post("/api/generate", {
-        "text": "Hello.\n\nWorld.",
-    })
+    data, _ = post(
+        "/api/generate",
+        {
+            "text": "Hello.\n\nWorld.",
+        },
+    )
     events = stream_sse(f"/api/stream/{data['job_id']}", max_events=500, timeout=60)
 
     strokes = [e for e in events if e["type"] == "stroke"]
@@ -247,12 +265,14 @@ def t_stream_paragraphs():
     assert len(completes) == 1, f"Expected 1 complete event, got {len(completes)}"
     assert completes[0]["lines"] >= 2, f"Expected >= 2 lines, got {completes[0]['lines']}"
 
+
 test("SSE stream handles paragraph breaks", t_stream_paragraphs)
 
 
 def t_stream_404():
     code = get_error_code("/api/stream/nonexistent-job-id")
     assert code == 404, f"Expected 404, got {code}"
+
 
 test("SSE stream returns 404 for bad job_id", t_stream_404)
 
@@ -273,12 +293,14 @@ def t_job_complete():
     assert status_data["job_id"] == job_id
     assert status_data["status"] == "complete"
 
+
 test("GET /api/job/{id} shows complete after streaming", t_job_complete)
 
 
 def t_job_404():
     code = get_error_code("/api/job/fake-id-12345")
     assert code == 404
+
 
 test("GET /api/job with bad id returns 404", t_job_404)
 
@@ -297,6 +319,7 @@ def t_openapi():
     assert "/api/job/{job_id}" in paths, "Missing /api/job"
     assert "/health" in paths, "Missing /health"
     assert "/" in paths, "Missing /"
+
 
 test("GET /openapi.json has all endpoints", t_openapi)
 

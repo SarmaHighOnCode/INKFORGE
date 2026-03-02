@@ -44,8 +44,7 @@ def _cleanup_old_jobs() -> None:
 
     now = time.monotonic()
     expired = [
-        jid for jid, job in _jobs.items()
-        if now - job.get("created_at", now) > _JOB_TTL_SECONDS
+        jid for jid, job in _jobs.items() if now - job.get("created_at", now) > _JOB_TTL_SECONDS
     ]
     for jid in expired:
         del _jobs[jid]
@@ -106,8 +105,7 @@ async def generate_handwriting(
     stream_url = f"{base_url}/api/stream/{job_id}"
 
     logger.info(
-        f"Job {job_id} created: {len(request_body.text)} chars, "
-        f"style={request_body.style_id}"
+        f"Job {job_id} created: {len(request_body.text)} chars, style={request_body.style_id}"
     )
 
     return GenerateResponse(
@@ -150,7 +148,9 @@ async def websocket_stream(websocket: WebSocket, job_id: str) -> None:
         return
 
     if not engine.is_ready:
-        await websocket.send_json({"type": "error", "message": "Engine not ready — model still loading"})
+        await websocket.send_json(
+            {"type": "error", "message": "Engine not ready — model still loading"}
+        )
         await websocket.close(code=4003)
         return
 
@@ -285,10 +285,12 @@ async def stream_strokes(job_id: str, request: Request) -> StreamingResponse:
             job["status"] = "failed"
             job["error"] = str(e)
 
-            error_event = json.dumps({
-                "type": "error",
-                "message": str(e),
-            })
+            error_event = json.dumps(
+                {
+                    "type": "error",
+                    "message": str(e),
+                }
+            )
             yield f"data: {error_event}\n\n"
 
     return StreamingResponse(

@@ -146,14 +146,16 @@ class Renderer:
             # Create smooth path using quadratic bezier curves
             path_d = self._points_to_smooth_path(path_points)
 
-            dwg.add(dwg.path(
-                d=path_d,
-                stroke=ink,
-                stroke_width=stroke_width_base,
-                fill="none",
-                stroke_linecap="round",
-                stroke_linejoin="round",
-            ))
+            dwg.add(
+                dwg.path(
+                    d=path_d,
+                    stroke=ink,
+                    stroke_width=stroke_width_base,
+                    fill="none",
+                    stroke_linecap="round",
+                    stroke_linejoin="round",
+                )
+            )
 
         return dwg.tostring()
 
@@ -226,14 +228,16 @@ class Renderer:
                 if len(path_points) < 2:
                     continue
                 path_d = self._points_to_smooth_path(path_points)
-                dwg.add(dwg.path(
-                    d=path_d,
-                    stroke=ink,
-                    stroke_width=stroke_width_base,
-                    fill="none",
-                    stroke_linecap="round",
-                    stroke_linejoin="round",
-                ))
+                dwg.add(
+                    dwg.path(
+                        d=path_d,
+                        stroke=ink,
+                        stroke_width=stroke_width_base,
+                        fill="none",
+                        stroke_linecap="round",
+                        stroke_linejoin="round",
+                    )
+                )
 
         return dwg.tostring()
 
@@ -285,12 +289,14 @@ class Renderer:
         y = margin + spacing
 
         while y < height - margin:
-            dwg.add(dwg.line(
-                start=(margin, y),
-                end=(width - margin, y),
-                stroke=line_color,
-                stroke_width=0.3,
-            ))
+            dwg.add(
+                dwg.line(
+                    start=(margin, y),
+                    end=(width - margin, y),
+                    stroke=line_color,
+                    stroke_width=0.3,
+                )
+            )
             y += spacing
 
     def export_png(
@@ -458,14 +464,16 @@ class Renderer:
             if len(path_points) < 2:
                 continue
             path_d = self._points_to_smooth_path(path_points)
-            dwg.add(dwg.path(
-                d=path_d,
-                stroke=ink,
-                stroke_width=stroke_width,
-                fill="none",
-                stroke_linecap="round",
-                stroke_linejoin="round",
-            ))
+            dwg.add(
+                dwg.path(
+                    d=path_d,
+                    stroke=ink,
+                    stroke_width=stroke_width,
+                    fill="none",
+                    stroke_linecap="round",
+                    stroke_linejoin="round",
+                )
+            )
 
         # Convert to PIL Image
         png_bytes = cairosvg.svg2png(bytestring=dwg.tostring().encode("utf-8"))

@@ -132,11 +132,13 @@ class IAMStrokeDataset(Dataset):
                 else:
                     text_str = str(text_val)
 
-                samples.append({
-                    "strokes": data["strokes"].tolist(),
-                    "text": text_str,
-                    "writer_id": writer_id,
-                })
+                samples.append(
+                    {
+                        "strokes": data["strokes"].tolist(),
+                        "text": text_str,
+                        "writer_id": writer_id,
+                    }
+                )
             except Exception:
                 # Skip files that cannot be loaded without pickle or have other errors
                 continue
@@ -344,7 +346,7 @@ def parse_iam_xml(xml_path: Path) -> list[tuple[float, float, int, int, int]]:
     for i, (x, y, pen_down) in enumerate(abs_points):
         dx = x - prev_x
         dy = y - prev_y
-        is_last = (i == len(abs_points) - 1)
+        is_last = i == len(abs_points) - 1
 
         if is_last:
             p1, p2, p3 = 0, 0, 1  # end-of-sequence

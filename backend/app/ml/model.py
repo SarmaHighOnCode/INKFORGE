@@ -89,7 +89,7 @@ class HandwritingLSTM(nn.Module):
         # Total per mixture: 6 parameters
         # Plus 3 pen state logits
         mdn_output_dim = num_mixtures * 6  # π, μx, μy, σx, σy, ρ
-        pen_state_dim = 3                  # p1, p2, p3
+        pen_state_dim = 3  # p1, p2, p3
 
         self.mdn_head = nn.Linear(hidden_dim, mdn_output_dim)
         self.pen_head = nn.Linear(hidden_dim, pen_state_dim)
@@ -163,18 +163,18 @@ class HandwritingLSTM(nn.Module):
         # Each component has 6 params, total = M*6
         params = mdn_params.view(num_m, 6)
 
-        pi_logits = params[:, 0]          # Mixture weights (logits)
-        mu_x = params[:, 1]               # Mean x
-        mu_y = params[:, 2]               # Mean y
-        sigma_x = torch.exp(params[:, 3]) # Std x (exp to ensure positive)
-        sigma_y = torch.exp(params[:, 4]) # Std y
-        rho = torch.tanh(params[:, 5])    # Correlation (tanh to bound [-1, 1])
+        pi_logits = params[:, 0]  # Mixture weights (logits)
+        mu_x = params[:, 1]  # Mean x
+        mu_y = params[:, 2]  # Mean y
+        sigma_x = torch.exp(params[:, 3])  # Std x (exp to ensure positive)
+        sigma_y = torch.exp(params[:, 4])  # Std y
+        rho = torch.tanh(params[:, 5])  # Correlation (tanh to bound [-1, 1])
 
         # 2. Apply temperature
         # Scale mixture logits by 1/τ, scale sigmas by √τ
         pi = torch.softmax(pi_logits / temperature, dim=0)
-        sigma_x = sigma_x * (temperature ** 0.5)
-        sigma_y = sigma_y * (temperature ** 0.5)
+        sigma_x = sigma_x * (temperature**0.5)
+        sigma_y = sigma_y * (temperature**0.5)
 
         # 3. Sample mixture component from categorical distribution
         mixture_idx = torch.multinomial(pi, 1).item()
@@ -193,7 +193,7 @@ class HandwritingLSTM(nn.Module):
         z2 = torch.randn(1).item()
 
         dx = mu_x_k + sigma_x_k * z1
-        dy = mu_y_k + sigma_y_k * (rho_k * z1 + (1 - rho_k ** 2) ** 0.5 * z2)
+        dy = mu_y_k + sigma_y_k * (rho_k * z1 + (1 - rho_k**2) ** 0.5 * z2)
 
         # 5. Sample pen state from Bernoulli
         pen_probs = torch.softmax(pen_logits / temperature, dim=0)
@@ -256,19 +256,16 @@ class StyleEncoder(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, 2),
-
             # Block 2: 32 -> 64 channels
             nn.Conv2d(32, 64, kernel_size=3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, 2),
-
             # Block 3: 64 -> 128 channels
             nn.Conv2d(64, 128, kernel_size=3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, 2),
-
             # Block 4: 128 -> 256 channels
             nn.Conv2d(128, 256, kernel_size=3, padding=1),
             nn.BatchNorm2d(256),

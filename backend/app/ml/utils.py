@@ -32,18 +32,18 @@ def compute_mdn_loss(
         Scalar loss tensor.
     """
     batch_size, seq_len, _ = mdn_params.shape
-    num_m = num_mixtures # Renamed num_m to M for consistency with patch
+    num_m = num_mixtures  # Renamed num_m to M for consistency with patch
 
     # Reshape MDN params: [batch, seq, M*6] -> [batch, seq, M, 6]
     params = mdn_params.view(batch_size, seq_len, num_m, 6)
 
     # Extract parameters
-    pi_logits = params[:, :, :, 0]           # [batch, seq, M]
-    mu_x = params[:, :, :, 1]                # [batch, seq, M]
-    mu_y = params[:, :, :, 2]                # [batch, seq, M]
-    sigma_x_raw = params[:, :, :, 3]         # [batch, seq, M]
-    sigma_y_raw = params[:, :, :, 4]         # [batch, seq, M]
-    rho_raw = params[:, :, :, 5]             # [batch, seq, M]
+    pi_logits = params[:, :, :, 0]  # [batch, seq, M]
+    mu_x = params[:, :, :, 1]  # [batch, seq, M]
+    mu_y = params[:, :, :, 2]  # [batch, seq, M]
+    sigma_x_raw = params[:, :, :, 3]  # [batch, seq, M]
+    sigma_y_raw = params[:, :, :, 4]  # [batch, seq, M]
+    rho_raw = params[:, :, :, 5]  # [batch, seq, M]
 
     # Apply activations to ensure valid parameter ranges
     sigma_x = torch.exp(sigma_x_raw)
@@ -63,18 +63,18 @@ def compute_mdn_loss(
 
     dx = (target_x - mu_x) / sigma_x
     dy = (target_y - mu_y) / sigma_y
-    rho_sq = rho ** 2
+    rho_sq = rho**2
 
     # Avoid division by zero
     one_minus_rho_sq = (1 - rho_sq).clamp(min=1e-6)
 
-    z_val = dx ** 2 + dy ** 2 - 2 * rho * dx * dy # Corrected Z variable name from patch
+    z_val = dx**2 + dy**2 - 2 * rho * dx * dy  # Corrected Z variable name from patch
     log_gaussian = (
         -math.log(2 * math.pi)
-        - torch.log(sigma_x) # Changed from log_sigma_x
-        - torch.log(sigma_y) # Changed from log_sigma_y
+        - torch.log(sigma_x)  # Changed from log_sigma_x
+        - torch.log(sigma_y)  # Changed from log_sigma_y
         - 0.5 * torch.log(one_minus_rho_sq)
-        - z_val / (2 * one_minus_rho_sq) # Changed from Z to z_val
+        - z_val / (2 * one_minus_rho_sq)  # Changed from Z to z_val
     )  # [batch, seq, M]
 
     # Weighted sum using log-sum-exp: log(Σ π_k * N_k) = logsumexp(log π_k + log N_k)
@@ -86,7 +86,9 @@ def compute_mdn_loss(
     # Pen state loss: cross-entropy (target must be long/int64)
     pen_logits_flat = pen_logits.view(-1, 3)  # [batch*seq, 3]
     target_pen_flat = target_pen.long().view(-1)  # [batch*seq]
-    pen_loss = functional.cross_entropy(pen_logits_flat, target_pen_flat) # Corrected syntax from patch
+    pen_loss = functional.cross_entropy(
+        pen_logits_flat, target_pen_flat
+    )  # Corrected syntax from patch
 
     # Total loss
     total_loss = stroke_loss + pen_loss
@@ -176,7 +178,9 @@ def strokes_to_absolute(strokes: list[tuple[float, ...]]) -> list[tuple[float, f
     return absolute
 
 
-def absolute_to_strokes(points: list[tuple[float, float, int]]) -> list[tuple[float, float, int, int, int]]:
+def absolute_to_strokes(
+    points: list[tuple[float, float, int]],
+) -> list[tuple[float, float, int, int, int]]:
     """
     Convert absolute coordinates to relative stroke deltas.
 

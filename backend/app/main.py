@@ -33,6 +33,7 @@ logger = logging.getLogger("inkforge.app")
 # Lifespan — Load model ONCE on startup, release on shutdown
 # ============================================================
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
