@@ -115,8 +115,8 @@ app.include_router(generate.router, prefix="/api", tags=["generation"])
 app.include_router(health.router, tags=["health"])
 
 # Optional: register export and styles routes when ready
-# from app.api.routes import export, styles
-# app.include_router(export.router, prefix="/api", tags=["export"])
+from app.api.routes import export
+app.include_router(export.router, prefix="/api", tags=["export"])
 # app.include_router(styles.router, prefix="/api", tags=["styles"])
 
 
