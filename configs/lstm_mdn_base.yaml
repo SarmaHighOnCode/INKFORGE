@@ -6,7 +6,7 @@
 
 # --- Model Architecture (PRD Section 4.2.2) ---
 model:
-  vocab_size: 80                  # ASCII printable characters
+  vocab_size: 99                  # ASCII printable characters
   char_embed_dim: 256             # Character embedding dimension
   style_dim: 128                  # Style latent vector z ∈ ℝ¹²⁸
   hidden_dim: 512                 # LSTM hidden state dimension
