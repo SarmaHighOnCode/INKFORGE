@@ -71,8 +71,6 @@ class TestExportEndpoint:
 
         # Check that job_id is the missing field
         missing_fields = [
-            error["loc"][-1]
-            for error in data["detail"]
-            if error["type"] == "missing"
+            error["loc"][-1] for error in data["detail"] if error["type"] == "missing"
         ]
         assert "job_id" in missing_fields
