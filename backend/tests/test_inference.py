@@ -26,6 +26,7 @@ class TestHandwritingLSTM:
     def test_model_output_shapes(self) -> None:
         """Forward pass should produce correct output shapes."""
         import torch
+
         model = HandwritingLSTM(vocab_size=80, num_mixtures=20)
         char_seq = torch.zeros((2, 10), dtype=torch.long)
         stroke_seq = torch.zeros((2, 10, 5))
@@ -46,6 +47,7 @@ class TestStyleEncoder:
     def test_encoder_output_dim(self) -> None:
         """Encoder should output z ∈ ℝ¹²⁸."""
         import torch
+
         encoder = StyleEncoder(style_dim=128)
         dummy_image = torch.randn(2, 1, 64, 64)
         output = encoder(dummy_image)
@@ -58,6 +60,7 @@ class TestMDNSampling:
     def test_sample_produces_valid_stroke(self) -> None:
         """Sampled stroke should be a valid 5-tuple."""
         import torch
+
         model = HandwritingLSTM(vocab_size=80)
         mdn_params = torch.randn(120)
         pen_logits = torch.randn(3)
@@ -68,6 +71,7 @@ class TestMDNSampling:
     def test_temperature_affects_variance(self) -> None:
         """Higher temperature should produce more variance."""
         import torch
+
         model = HandwritingLSTM(vocab_size=80)
         mdn_params = torch.randn(120)
         pen_logits = torch.randn(3)

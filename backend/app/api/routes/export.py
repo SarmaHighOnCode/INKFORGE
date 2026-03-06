@@ -26,8 +26,4 @@ async def export_handwriting(request: ExportRequest) -> ExportResponse:
     # Mocking implementation for MVP and testing
     download_url = f"https://example.com/exports/{request.job_id}.{request.format.value}"
 
-    return ExportResponse(
-        download_url=download_url,
-        format=request.format,
-        file_size_bytes=1024
-    )
+    return ExportResponse(download_url=download_url, format=request.format, file_size_bytes=1024)
