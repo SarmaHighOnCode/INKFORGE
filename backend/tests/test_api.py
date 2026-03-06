@@ -63,5 +63,5 @@ class TestExportEndpoint:
 
     def test_export_requires_job_id(self) -> None:
         """Should return 422 if job_id is missing."""
-        # TODO: Implement
-        pass
+        response = client.post("/api/export", json={})
+        assert response.status_code == 422
