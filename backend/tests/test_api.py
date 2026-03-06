@@ -16,13 +16,17 @@ class TestHealthEndpoint:
 
     def test_health_returns_200(self) -> None:
         """Health endpoint should return 200 with status info."""
-        # TODO: Implement when health route is registered
-        pass
+        response = client.get("/health")
+        assert response.status_code == 200
 
     def test_health_contains_required_fields(self) -> None:
-        """Health response should contain status, model_loaded, gpu_available."""
-        # TODO: Implement
-        pass
+        """Health response should contain status, model_loaded, and nested gpu info."""
+        response = client.get("/health")
+        data = response.json()
+        assert "status" in data
+        assert "model_loaded" in data
+        assert "gpu" in data
+        assert "available" in data["gpu"]
 
 
 class TestStylesEndpoint:
