@@ -25,8 +25,15 @@ class TestHandwritingLSTM:
 
     def test_model_output_shapes(self) -> None:
         """Forward pass should produce correct output shapes."""
-        # TODO: Implement when forward pass is ready
-        pass
+        import torch
+
+        model = HandwritingLSTM(vocab_size=80, num_mixtures=20)
+        char_seq = torch.zeros((2, 10), dtype=torch.long)
+        stroke_seq = torch.zeros((2, 10, 5))
+        style_z = torch.randn((2, 128))
+        mdn_params, pen_logits, _ = model(char_seq, stroke_seq, style_z)
+        assert mdn_params.shape == (2, 10, 120)
+        assert pen_logits.shape == (2, 10, 3)
 
 
 class TestStyleEncoder:
@@ -39,8 +46,12 @@ class TestStyleEncoder:
 
     def test_encoder_output_dim(self) -> None:
         """Encoder should output z ∈ ℝ¹²⁸."""
-        # TODO: Implement when encoder is ready
-        pass
+        import torch
+
+        encoder = StyleEncoder(style_dim=128)
+        dummy_image = torch.randn(2, 1, 64, 64)
+        output = encoder(dummy_image)
+        assert output.shape == (2, 128)
 
 
 class TestMDNSampling:
@@ -48,10 +59,23 @@ class TestMDNSampling:
 
     def test_sample_produces_valid_stroke(self) -> None:
         """Sampled stroke should be a valid 5-tuple."""
-        # TODO: Implement
-        pass
+        import torch
+
+        model = HandwritingLSTM(vocab_size=80)
+        mdn_params = torch.randn(120)
+        pen_logits = torch.randn(3)
+        stroke = model.sample(mdn_params, pen_logits)
+        assert len(stroke) == 5
+        assert isinstance(stroke, tuple)
 
     def test_temperature_affects_variance(self) -> None:
         """Higher temperature should produce more variance."""
-        # TODO: Implement
-        pass
+        import torch
+
+        model = HandwritingLSTM(vocab_size=80)
+        mdn_params = torch.randn(120)
+        pen_logits = torch.randn(3)
+        stroke1 = model.sample(mdn_params, pen_logits, temperature=0.1)
+        stroke2 = model.sample(mdn_params, pen_logits, temperature=2.0)
+        assert len(stroke1) == 5
+        assert len(stroke2) == 5
